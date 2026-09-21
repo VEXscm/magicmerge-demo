@@ -105,7 +105,7 @@ The JJ-only kill switch (`com config set --user merge.magicmerge false`) does
 | 06 | `case/06-ruby-replay-stub` | `…/batch_change_set_test.rb` | conflict | combine both singleton methods | **#4321 / #4333** `magic_merges` stub |
 | 07 | `case/07-route-coverage` | `vex-cli/route_coverage.json` | conflict | keep **both** new operations | `createMergeResolution` vs spaces create |
 | 08 | `case/08-git-view-delete-modify` | `crates/vex-git-view/src/control.rs` | **modify/delete** | **still modify/delete** — content driver is not used | **#2103** vs **#2101** |
-| 09 | `case/09-swarm-owned-functions` | `src/workers.py` | **already clean** (Diff3) | same; MagicMerge does not run | PRD 146 swarm owned functions |
+| 09 | `case/09-swarm-owned-functions` | `src/workers.py` | conflict (file is small) | should **combine** both functions | PRD 146 swarm owned functions |
 | 10 | `case/10-divergent-timeout` | `config.py` | conflict | **must stay conflicted** | false-clean timeout 15 vs 60 |
 
 Full citations: [`cases.json`](cases.json) and each `fixtures/<id>/meta.json`.
@@ -130,8 +130,8 @@ python3 scripts/seed.py
 
 - **01, 02, 10, 08** still conflict. If MagicMerge writes a clean file for a
   date, a Draft-vs-Complete row, or `TIMEOUT = 15` vs `60`, that is a failure.
-- **09** is clean in **both** passes. Independent functions on different hunks
-  are Diff3’s job.
+- **09** conflicts in stock Git because the file is tiny. With the driver,
+  line merge or MagicMerge should keep both function bodies.
 - **04, 05** often go clean from **Mergiraf** before MagicMerge is consulted.
 - **03, 06, 07** are why MagicMerge exists: Markdown table inserts, a Ruby
   test stub, a JSON array insert that line-merge and Mergiraf leave behind.
