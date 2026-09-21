@@ -6,4 +6,4 @@ def parse_signal(row):
 
 
 def check_acl(user):
-    return user["role"]
+    return user["role"] == "admin"
