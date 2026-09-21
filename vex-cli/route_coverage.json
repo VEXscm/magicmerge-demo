@@ -1,5 +1,11 @@
 [
   {
+    "action": "create",
+    "method": "POST",
+    "operation_id": "post_api_v1_networking_spaces",
+    "path": "/api/v1/networking/spaces"
+  },
+  {
     "action": "webhooks",
     "method": "POST",
     "operation_id": "api_v1_metronome_webhooks",
