@@ -35,6 +35,11 @@ trap cleanup EXIT
 
 git clone --quiet "$ROOT" "$WORKDIR/repo"
 cd "$WORKDIR/repo"
+# A GitHub clone only has case/* as origin/* remotes; those are not copied by
+# `git clone`. Pull them in so the work clone can switch the same way the README does.
+if ! git show-ref --verify --quiet refs/remotes/origin/case/01-status-last-updated/ours; then
+  git fetch -q "$ROOT" '+refs/remotes/origin/case/*:refs/remotes/origin/case/*'
+fi
 
 if [[ "$MODE" == "with" ]]; then
   if ! command -v com >/dev/null 2>&1; then
@@ -51,9 +56,9 @@ printf '\n== %s MagicMerge ==\n\n' "$MODE"
 for id in "${CASES[@]}"; do
   path="$(tr -d '\n' < "$ROOT/fixtures/$id/path.txt")"
   expect="$(python3 -c "import json; print(json.load(open('$ROOT/fixtures/$id/meta.json'))['expect_$MODE'])")"
-  git switch --quiet "case/$id/ours"
+  git switch --quiet --detach "origin/case/$id/ours"
   set +e
-  git merge --quiet --no-edit "case/$id/theirs" >/tmp/magicmerge-merge.out 2>&1
+  git merge --quiet --no-edit "origin/case/$id/theirs" >/tmp/magicmerge-merge.out 2>&1
   merge_status=$?
   set -e
   unmerged="$(git ls-files -u | wc -l | tr -d ' ')"
@@ -85,7 +90,7 @@ PY
   else
     echo "    (file deleted)"
   fi
-  git merge --abort >/dev/null 2>&1 || git reset --quiet --hard "case/$id/ours"
+  git merge --abort >/dev/null 2>&1 || git reset --quiet --hard "origin/case/$id/ours"
 done
 
 echo

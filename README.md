@@ -34,20 +34,24 @@ git clone https://github.com/vexscm/magicmerge-demo.git
 cd magicmerge-demo
 ```
 
+A default clone keeps the cases as remote-tracking branches (`origin/case/...`).
+Use that `origin/` prefix with `--detach`. `git switch --detach case/...` tries
+to create a local branch and Git refuses (`--detach` cannot be used with `-b`).
+
 ### 1. Without MagicMerge
 
 Stock Git. No merge driver, no `com`.
 
 ```sh
 git status
-git branch --list 'case/*'
+git branch -r --list 'origin/case/*'
 
 # Repeat for 01 … 10 (example: additive STATUS.md rows)
-git switch --detach case/03-status-additive-rows/ours
-git merge --no-edit case/03-status-additive-rows/theirs
+git switch --detach origin/case/03-status-additive-rows/ours
+git merge --no-edit origin/case/03-status-additive-rows/theirs
 # inspect markers or the combined file
 cat roadmap/STATUS.md
-git merge --abort   # or: git switch --detach main
+git merge --abort   # or: git switch --detach origin/main
 ```
 
 Or run every case into throwaway worktrees:
@@ -58,7 +62,7 @@ Or run every case into throwaway worktrees:
 
 ### 2. With MagicMerge
 
-Still in a **fresh clone** (or after `git switch --detach main`). Install the
+Still in a **fresh clone** (or after `git switch --detach origin/main`). Install the
 driver **only in this repository**:
 
 ```sh
@@ -72,8 +76,8 @@ That registers Git merge driver `com` → `com magic-merge --git %O %A %B …` a
 adds `* merge=com`. Then merge the same pairs:
 
 ```sh
-git switch --detach case/03-status-additive-rows/ours
-git merge --no-edit case/03-status-additive-rows/theirs
+git switch --detach origin/case/03-status-additive-rows/ours
+git merge --no-edit origin/case/03-status-additive-rows/theirs
 cat roadmap/STATUS.md
 ```
 
