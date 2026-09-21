@@ -1,0 +1,10 @@
+{
+  "id": "08-git-view-delete-modify",
+  "path": "crates/vex-git-view/src/control.rs",
+  "layer": "none \u2014 Git modify/delete; MagicMerge is a content driver and is not invoked",
+  "title": "Delete vs modify ProjectionControl",
+  "provenance": "2026-09-12 queue ejection of #2103: delete/modify conflict at crates/vex-git-view/src/control.rs against open #2101 (roadmap/evidence/148-repository-router/hosted-canary-preparation-2026-09-12.json). Mini reproduction of that file-level conflict.",
+  "delete_theirs": true,
+  "expect_without": "conflict",
+  "expect_with": "conflict"
+}

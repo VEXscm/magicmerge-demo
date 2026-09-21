@@ -1,0 +1,10 @@
+{
+  "id": "01-status-last-updated",
+  "path": "roadmap/STATUS.md",
+  "layer": "none \u2014 incompatible dates",
+  "title": "STATUS.md last-updated date",
+  "provenance": "Native conflict revision 335ad6877743 (2026-09-14), conflict 1 of 3 in roadmap/STATUS.md. Documented in .agents/skills/roadmap/references/status-structure.md. One side wrote 2026-09-13 (close public-repository PRD); the other kept 2026-09-11 (ForgeMark rebase destination).",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "conflict"
+}

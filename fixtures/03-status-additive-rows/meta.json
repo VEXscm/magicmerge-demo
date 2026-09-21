@@ -1,0 +1,10 @@
+{
+  "id": "03-status-additive-rows",
+  "path": "roadmap/STATUS.md",
+  "layer": "MagicMerge (Markdown is outside Mergiraf)",
+  "title": "Two Changes add different STATUS.md rows at the same place",
+  "provenance": "2026-08-05 change #362 ejected with 'conflicting changes at roadmap/STATUS.md; restack required' after another change added a row to the same file (roadmap/120-merge-queue-restack-on-tip.md). Manual recovery: rebase, three purely additive resolutions, re-submit. Recreated as two inserts after PRD 043.",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "combine"
+}

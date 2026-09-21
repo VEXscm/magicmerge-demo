@@ -1,0 +1,14 @@
+[
+  {
+    "action": "merge-resolutions",
+    "method": "POST",
+    "operation_id": "createMergeResolution",
+    "path": "/api/v1/merge_resolutions"
+  },
+  {
+    "action": "webhooks",
+    "method": "POST",
+    "operation_id": "api_v1_metronome_webhooks",
+    "path": "/api/v1/metronome/webhooks"
+  }
+]

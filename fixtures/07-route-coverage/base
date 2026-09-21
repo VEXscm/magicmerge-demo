@@ -1,0 +1,8 @@
+[
+  {
+    "action": "webhooks",
+    "method": "POST",
+    "operation_id": "api_v1_metronome_webhooks",
+    "path": "/api/v1/metronome/webhooks"
+  }
+]

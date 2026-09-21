@@ -1,0 +1,10 @@
+{
+  "id": "06-ruby-replay-stub",
+  "path": "vex-api/test/services/vcs/merge_queue/batch_change_set_test.rb",
+  "layer": "Mergiraf or MagicMerge",
+  "title": "LandingCommitBuilder test stub grows two independent methods",
+  "provenance": "Changes #4321/#4333. ChangeLandingCandidateBuilder started reading commit_builder.magic_merges; the batch_change_set_test replay Object implemented commit_for and flush! but not magic_merges (NoMethodError). A sibling change added a different singleton method on the same stub.",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "combine"
+}

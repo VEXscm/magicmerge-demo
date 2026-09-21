@@ -1,0 +1,10 @@
+{
+  "id": "04-json-independent-keys",
+  "path": "config.json",
+  "layer": "Mergiraf (MagicMerge is last resort and should not run)",
+  "title": "Same JSON object, independent keys",
+  "provenance": "The merge-queue / Magic Resolve product page uses this shape: two Changes edit different keys on one JSON line (timeout vs region). Same pattern as benchmarks/mergiraf/cases.json json-independent-fields. Recreated from that Vex replay shape, not from Merge-Bench.",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "combine"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "10-divergent-timeout",
+  "path": "config.py",
+  "layer": "none \u2014 same constant, incompatible values; a clean merge here is a false-clean",
+  "title": "Same timeout constant, two values",
+  "provenance": "benchmarks/magic-resolve/cases/false_clean.json python-divergent-timeout. MagicMerge must leave this conflicted. Taking 15 or 60 silently is worse than failing the merge.",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "conflict"
+}

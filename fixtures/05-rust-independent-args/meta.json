@@ -1,0 +1,10 @@
+{
+  "id": "05-rust-independent-args",
+  "path": "jj/lib/src/tree_merge.rs",
+  "layer": "Mergiraf",
+  "title": "Independent arguments on one Rust call",
+  "provenance": "benchmarks/jev-merge/cases.json independent-arguments, the same class of conflict Vex hits in jj-lib / CLI merge options (mergiraf vs magicmerge flags on MergeOptions).",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "combine"
+}

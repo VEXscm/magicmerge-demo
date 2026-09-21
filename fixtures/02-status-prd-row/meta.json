@@ -1,0 +1,10 @@
+{
+  "id": "02-status-prd-row",
+  "path": "roadmap/STATUS.md",
+  "layer": "none \u2014 same PRD row, incompatible status",
+  "title": "STATUS.md PRD 044 row rewritten two ways",
+  "provenance": "Same revision 335ad6877743, conflict 2 of 3. Destination still had PRD 044 as Draft; the rebased change closed it as Complete after #2384/#2678/#2690. Two meanings for one row.",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "conflict"
+}

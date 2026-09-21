@@ -1,0 +1,102 @@
+[
+  {
+    "id": "01-status-last-updated",
+    "path": "roadmap/STATUS.md",
+    "layer": "none \u2014 incompatible dates",
+    "title": "STATUS.md last-updated date",
+    "provenance": "Native conflict revision 335ad6877743 (2026-09-14), conflict 1 of 3 in roadmap/STATUS.md. Documented in .agents/skills/roadmap/references/status-structure.md. One side wrote 2026-09-13 (close public-repository PRD); the other kept 2026-09-11 (ForgeMark rebase destination).",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "conflict"
+  },
+  {
+    "id": "02-status-prd-row",
+    "path": "roadmap/STATUS.md",
+    "layer": "none \u2014 same PRD row, incompatible status",
+    "title": "STATUS.md PRD 044 row rewritten two ways",
+    "provenance": "Same revision 335ad6877743, conflict 2 of 3. Destination still had PRD 044 as Draft; the rebased change closed it as Complete after #2384/#2678/#2690. Two meanings for one row.",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "conflict"
+  },
+  {
+    "id": "03-status-additive-rows",
+    "path": "roadmap/STATUS.md",
+    "layer": "MagicMerge (Markdown is outside Mergiraf)",
+    "title": "Two Changes add different STATUS.md rows at the same place",
+    "provenance": "2026-08-05 change #362 ejected with 'conflicting changes at roadmap/STATUS.md; restack required' after another change added a row to the same file (roadmap/120-merge-queue-restack-on-tip.md). Manual recovery: rebase, three purely additive resolutions, re-submit. Recreated as two inserts after PRD 043.",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "combine"
+  },
+  {
+    "id": "04-json-independent-keys",
+    "path": "config.json",
+    "layer": "Mergiraf (MagicMerge is last resort and should not run)",
+    "title": "Same JSON object, independent keys",
+    "provenance": "The merge-queue / Magic Resolve product page uses this shape: two Changes edit different keys on one JSON line (timeout vs region). Same pattern as benchmarks/mergiraf/cases.json json-independent-fields. Recreated from that Vex replay shape, not from Merge-Bench.",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "combine"
+  },
+  {
+    "id": "05-rust-independent-args",
+    "path": "jj/lib/src/tree_merge.rs",
+    "layer": "Mergiraf",
+    "title": "Independent arguments on one Rust call",
+    "provenance": "benchmarks/jev-merge/cases.json independent-arguments, the same class of conflict Vex hits in jj-lib / CLI merge options (mergiraf vs magicmerge flags on MergeOptions).",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "combine"
+  },
+  {
+    "id": "06-ruby-replay-stub",
+    "path": "vex-api/test/services/vcs/merge_queue/batch_change_set_test.rb",
+    "layer": "Mergiraf or MagicMerge",
+    "title": "LandingCommitBuilder test stub grows two independent methods",
+    "provenance": "Changes #4321/#4333. ChangeLandingCandidateBuilder started reading commit_builder.magic_merges; the batch_change_set_test replay Object implemented commit_for and flush! but not magic_merges (NoMethodError). A sibling change added a different singleton method on the same stub.",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "combine"
+  },
+  {
+    "id": "07-route-coverage",
+    "path": "vex-cli/route_coverage.json",
+    "layer": "MagicMerge (JSON array insert at the same index)",
+    "title": "Two Changes append different CLI route-coverage operations",
+    "provenance": "checked_in_route_coverage_matches_runtime_output. Change #1890 regenerated vex-cli/route_coverage.json for a new resource; MagicMerge added POST /api/v1/merge_resolutions (createMergeResolution). Both inserts sit next to the metronome webhooks entry.",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "combine"
+  },
+  {
+    "id": "08-git-view-delete-modify",
+    "path": "crates/vex-git-view/src/control.rs",
+    "layer": "none \u2014 Git modify/delete; MagicMerge is a content driver and is not invoked",
+    "title": "Delete vs modify ProjectionControl",
+    "provenance": "2026-09-12 queue ejection of #2103: delete/modify conflict at crates/vex-git-view/src/control.rs against open #2101 (roadmap/evidence/148-repository-router/hosted-canary-preparation-2026-09-12.json). Mini reproduction of that file-level conflict.",
+    "delete_theirs": true,
+    "expect_without": "conflict",
+    "expect_with": "conflict"
+  },
+  {
+    "id": "09-swarm-owned-functions",
+    "path": "src/workers.py",
+    "layer": "line merge (Diff3); MagicMerge should not run",
+    "title": "Swarm agents edit independent functions in one file",
+    "provenance": "PRD 146 swarm restack: each sub-agent owns a path/function. benchmarks/magic-resolve/cases/swarm.json swarm-owned-functions-combine. Ingest edits parse_signal; auth edits check_acl. Different hunks \u2014 stock Git already combines them.",
+    "delete_theirs": false,
+    "expect_without": "combine",
+    "expect_with": "combine"
+  },
+  {
+    "id": "10-divergent-timeout",
+    "path": "config.py",
+    "layer": "none \u2014 same constant, incompatible values; a clean merge here is a false-clean",
+    "title": "Same timeout constant, two values",
+    "provenance": "benchmarks/magic-resolve/cases/false_clean.json python-divergent-timeout. MagicMerge must leave this conflicted. Taking 15 or 60 silently is worse than failing the merge.",
+    "delete_theirs": false,
+    "expect_without": "conflict",
+    "expect_with": "conflict"
+  }
+]

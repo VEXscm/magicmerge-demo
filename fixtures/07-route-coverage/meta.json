@@ -1,0 +1,10 @@
+{
+  "id": "07-route-coverage",
+  "path": "vex-cli/route_coverage.json",
+  "layer": "MagicMerge (JSON array insert at the same index)",
+  "title": "Two Changes append different CLI route-coverage operations",
+  "provenance": "checked_in_route_coverage_matches_runtime_output. Change #1890 regenerated vex-cli/route_coverage.json for a new resource; MagicMerge added POST /api/v1/merge_resolutions (createMergeResolution). Both inserts sit next to the metronome webhooks entry.",
+  "delete_theirs": false,
+  "expect_without": "conflict",
+  "expect_with": "combine"
+}

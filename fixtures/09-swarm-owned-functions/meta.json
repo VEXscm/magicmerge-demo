@@ -1,0 +1,10 @@
+{
+  "id": "09-swarm-owned-functions",
+  "path": "src/workers.py",
+  "layer": "line merge (Diff3); MagicMerge should not run",
+  "title": "Swarm agents edit independent functions in one file",
+  "provenance": "PRD 146 swarm restack: each sub-agent owns a path/function. benchmarks/magic-resolve/cases/swarm.json swarm-owned-functions-combine. Ingest edits parse_signal; auth edits check_acl. Different hunks \u2014 stock Git already combines them.",
+  "delete_theirs": false,
+  "expect_without": "combine",
+  "expect_with": "combine"
+}
