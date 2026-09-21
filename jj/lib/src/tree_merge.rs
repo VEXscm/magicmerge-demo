@@ -1,1 +1,1 @@
-fn options() { MergeOptions { mergiraf: true, magicmerge: true } }
+fn options() { MergeOptions { mergiraf: false, magicmerge: true } }
