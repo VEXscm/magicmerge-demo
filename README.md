@@ -4,6 +4,10 @@ Ten **small-scale Git reproductions** of merge conflicts that actually happened
 in the Vex monorepo. Each case is three commits (`base` / `ours` / `theirs`)
 and one file. Nothing here is the live monorepo.
 
+![Stock Git vs MagicMerge](https://github.com/user-attachments/assets/efd88a9c-dc8e-419f-bc89-226a100f560c)
+
+[Recording](https://github.com/VEXscm/magicmerge-demo/issues/1): stock Git still conflicts on all ten cases; the same JSON edit with `com magic-merge` as the Git driver keeps both independent keys.
+
 Use this repo to see stock Git, then the same merges with **MagicMerge**
 installed as a Git merge driver (`com magic-merge --git`).
 
