@@ -5,7 +5,7 @@ in the Vex monorepo. Each case is three commits (`base` / `ours` / `theirs`)
 and one file. Nothing here is the live monorepo.
 
 Use this repo to see stock Git, then the same merges with **MagicMerge**
-installed as a Git merge driver (`com merge-file --git`).
+installed as a Git merge driver (`com magic-merge --git`).
 
 MagicMerge is last resort. The driver tries ordinary line merge, then
 [Mergiraf](https://mergiraf.org), and only then MagicMerge. Several cases
@@ -59,12 +59,12 @@ driver **only in this repository**:
 
 ```sh
 com login
-com merge-file --install-driver --gitattributes
+com magic-merge --install-driver --gitattributes
 git config --get merge.com.driver
 cat .gitattributes    # should contain: * merge=com
 ```
 
-That registers Git merge driver `com` → `com merge-file --git %O %A %B …` and
+That registers Git merge driver `com` → `com magic-merge --git %O %A %B …` and
 adds `* merge=com`. Then merge the same pairs:
 
 ```sh
@@ -140,4 +140,4 @@ python3 scripts/seed.py
 
 - MagicMerge: `https://composal.ai/docs/ci/magic-merge`
 - Install globally (not used by this demo):
-  `com merge-file --install-driver --global --gitattributes`
+  `com magic-merge --install-driver --global --gitattributes`

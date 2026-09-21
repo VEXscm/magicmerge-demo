@@ -41,7 +41,7 @@ if [[ "$MODE" == "with" ]]; then
     echo "Need the com CLI on PATH, then: com login" >&2
     exit 1
   fi
-  com merge-file --install-driver --gitattributes
+  com magic-merge --install-driver --gitattributes
 fi
 
 pass=0
