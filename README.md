@@ -4,12 +4,8 @@ Ten **small-scale Git reproductions** of merge conflicts that actually happened
 in the Vex monorepo. Each case is three commits (`base` / `ours` / `theirs`)
 and one file. Nothing here is the live monorepo.
 
-![Stock Git vs MagicMerge](https://github.com/user-attachments/assets/efd88a9c-dc8e-419f-bc89-226a100f560c)
-
-[Recording](https://github.com/VEXscm/magicmerge-demo/issues/1): stock Git still conflicts on all ten cases; the same JSON edit with `com magic-merge` as the Git driver keeps both independent keys.
-
 Use this repo to see stock Git, then the same merges with **MagicMerge**
-installed as a Git merge driver (`com magic-merge --git`).
+installed as a Git merge driver (`com merge-file --git`).
 
 MagicMerge is last resort. The driver tries ordinary line merge, then
 [Mergiraf](https://mergiraf.org), and only then MagicMerge. Several cases
@@ -19,8 +15,24 @@ below are supposed to stay conflicted — a silent “resolution” of those is 
 ## Prerequisites
 
 - `git`
-- For the MagicMerge pass: a signed-in `com` CLI (`com login`) that can reach
-  Composal. MagicMerge calls `POST /api/v1/merge_resolutions`.
+- For the MagicMerge pass: a signed-in CLI that has the `magic-merge`
+  subcommand, and that can reach Composal. MagicMerge calls
+  `POST /api/v1/merge_resolutions`.
+
+`magic-merge` landed after CLI **1.17.21**, so the released `com` does not have
+it yet — `com magic-merge` prints `unrecognized subcommand`. Until a release is
+cut, build one from the monorepo:
+
+```sh
+make install          # installs `comdev` into ~/.local/bin, leaving `com` alone
+comdev magic-merge --help
+```
+
+Every command below works with either binary. Set `COM_BIN` to pick one:
+
+```sh
+export COM_BIN=comdev   # or: export COM_BIN=com, once a release ships it
+```
 
 Do **not** install the driver globally for this demo. The commands below write
 a **repository-local** Git merge driver so your other clones stay untouched.
@@ -34,24 +46,20 @@ git clone https://github.com/vexscm/magicmerge-demo.git
 cd magicmerge-demo
 ```
 
-A default clone keeps the cases as remote-tracking branches (`origin/case/...`).
-Use that `origin/` prefix with `--detach`. `git switch --detach case/...` tries
-to create a local branch and Git refuses (`--detach` cannot be used with `-b`).
-
 ### 1. Without MagicMerge
 
 Stock Git. No merge driver, no `com`.
 
 ```sh
 git status
-git branch -r --list 'origin/case/*'
+git branch --list 'case/*'
 
 # Repeat for 01 … 10 (example: additive STATUS.md rows)
-git switch --detach origin/case/03-status-additive-rows/ours
-git merge --no-edit origin/case/03-status-additive-rows/theirs
+git switch --detach case/03-status-additive-rows/ours
+git merge --no-edit case/03-status-additive-rows/theirs
 # inspect markers or the combined file
 cat roadmap/STATUS.md
-git merge --abort   # or: git switch --detach origin/main
+git merge --abort   # or: git switch --detach main
 ```
 
 Or run every case into throwaway worktrees:
@@ -62,29 +70,29 @@ Or run every case into throwaway worktrees:
 
 ### 2. With MagicMerge
 
-Still in a **fresh clone** (or after `git switch --detach origin/main`). Install the
+Still in a **fresh clone** (or after `git switch --detach main`). Install the
 driver **only in this repository**:
 
 ```sh
 com login
-com magic-merge --install-driver --gitattributes
+com merge-file --install-driver --gitattributes
 git config --get merge.com.driver
 cat .gitattributes    # should contain: * merge=com
 ```
 
-That registers Git merge driver `com` → `com magic-merge --git %O %A %B …` and
+That registers Git merge driver `com` → `com merge-file --git %O %A %B …` and
 adds `* merge=com`. Then merge the same pairs:
 
 ```sh
-git switch --detach origin/case/03-status-additive-rows/ours
-git merge --no-edit origin/case/03-status-additive-rows/theirs
+git switch --detach case/03-status-additive-rows/ours
+git merge --no-edit case/03-status-additive-rows/theirs
 cat roadmap/STATUS.md
 ```
 
 Or:
 
 ```sh
-./demo with
+COM_BIN=comdev ./demo with
 ```
 
 `./demo with` installs the driver inside a temp clone, so the copy you are
@@ -113,7 +121,7 @@ The JJ-only kill switch (`com config set --user merge.magicmerge false`) does
 | 06 | `case/06-ruby-replay-stub` | `…/batch_change_set_test.rb` | conflict | combine both singleton methods | **#4321 / #4333** `magic_merges` stub |
 | 07 | `case/07-route-coverage` | `vex-cli/route_coverage.json` | conflict | keep **both** new operations | `createMergeResolution` vs spaces create |
 | 08 | `case/08-git-view-delete-modify` | `crates/vex-git-view/src/control.rs` | **modify/delete** | **still modify/delete** — content driver is not used | **#2103** vs **#2101** |
-| 09 | `case/09-swarm-owned-functions` | `src/workers.py` | conflict (file is small) | should **combine** both functions | PRD 146 swarm owned functions |
+| 09 | `case/09-swarm-owned-functions` | `src/workers.py` | **already clean** (Diff3) | same; MagicMerge does not run | PRD 146 swarm owned functions |
 | 10 | `case/10-divergent-timeout` | `config.py` | conflict | **must stay conflicted** | false-clean timeout 15 vs 60 |
 
 Full citations: [`cases.json`](cases.json) and each `fixtures/<id>/meta.json`.
@@ -138,14 +146,39 @@ python3 scripts/seed.py
 
 - **01, 02, 10, 08** still conflict. If MagicMerge writes a clean file for a
   date, a Draft-vs-Complete row, or `TIMEOUT = 15` vs `60`, that is a failure.
-- **09** conflicts in stock Git because the file is tiny. With the driver,
-  line merge or MagicMerge should keep both function bodies.
+- **09** is clean in **both** passes. Independent functions on different hunks
+  are Diff3’s job.
 - **04, 05** often go clean from **Mergiraf** before MagicMerge is consulted.
 - **03, 06, 07** are why MagicMerge exists: Markdown table inserts, a Ruby
   test stub, a JSON array insert that line-merge and Mergiraf leave behind.
+
+## Troubleshooting
+
+**`unrecognized subcommand 'magic-merge'`** — your `com` predates the
+subcommand. Build `comdev` (see Prerequisites) and re-run with
+`COM_BIN=comdev`.
+
+**`server returned 404` from the driver** — the CLI reached Composal but the
+API did not serve `POST /api/v1/merge_resolutions`. Check it directly:
+
+```sh
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://vex.sc/api/v1/merge_resolutions \
+  -H "Authorization: Bearer $YOUR_TOKEN" -H 'Content-Type: application/json' \
+  -d '{"path":"a.txt","base":"a\n","ours":"b\n","theirs":"c\n"}'
+```
+
+`401` means your token is wrong. `404` means the deployed API is behind the
+route — a deploy problem, not something this repo can fix. `200` means the
+driver should work. Without the API, every case falls back to whatever line
+merge and Mergiraf can do on their own, so the `combine` rows below will show
+`conflict`.
+
+**`fatal: invalid reference: case/…`** — a plain `git clone` keeps the cases as
+remote-tracking branches. Use the `origin/` prefix with `--detach`, or let
+`./demo` do it for you.
 
 ## Product docs
 
 - MagicMerge: `https://composal.ai/docs/ci/magic-merge`
 - Install globally (not used by this demo):
-  `com magic-merge --install-driver --global --gitattributes`
+  `com merge-file --install-driver --global --gitattributes`

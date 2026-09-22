@@ -35,18 +35,33 @@ trap cleanup EXIT
 
 git clone --quiet "$ROOT" "$WORKDIR/repo"
 cd "$WORKDIR/repo"
-# A GitHub clone only has case/* as origin/* remotes; those are not copied by
-# `git clone`. Pull them in so the work clone can switch the same way the README does.
-if ! git show-ref --verify --quiet refs/remotes/origin/case/01-status-last-updated/ours; then
-  git fetch -q "$ROOT" '+refs/remotes/origin/case/*:refs/remotes/origin/case/*'
+
+# A clone only copies refs/heads. In a normal clone of this repo the cases live
+# under refs/remotes/origin/case/*, so the copy above would have none of them.
+# Pull them in as local branches from whichever namespace the source uses.
+git fetch --quiet origin 'refs/heads/case/*:refs/heads/case/*' 2>/dev/null || true
+git fetch --quiet origin 'refs/remotes/origin/case/*:refs/heads/case/*' 2>/dev/null || true
+if ! git rev-parse --verify --quiet "case/${CASES[0]}/ours" >/dev/null; then
+  echo "Could not find the case branches in $ROOT." >&2
+  echo "Clone the repo fresh, or rebuild them with: python3 scripts/seed.py" >&2
+  exit 1
 fi
 
+# `magic-merge` shipped after CLI 1.17.21. Point COM_BIN at a build that has
+# it (`make install` in the monorepo gives you `comdev`) until a release lands.
+COM_BIN="${COM_BIN:-com}"
+
 if [[ "$MODE" == "with" ]]; then
-  if ! command -v com >/dev/null 2>&1; then
-    echo "Need the com CLI on PATH, then: com login" >&2
+  if ! command -v "$COM_BIN" >/dev/null 2>&1; then
+    echo "Need the $COM_BIN CLI on PATH, then: $COM_BIN login" >&2
     exit 1
   fi
-  com magic-merge --install-driver --gitattributes
+  if ! "$COM_BIN" magic-merge --help >/dev/null 2>&1; then
+    echo "$COM_BIN has no 'magic-merge' subcommand (needs a CLI newer than 1.17.21)." >&2
+    echo "Build one from the monorepo with 'make install' and re-run: COM_BIN=comdev $0 with" >&2
+    exit 1
+  fi
+  "$COM_BIN" magic-merge --install-driver --gitattributes
 fi
 
 pass=0
@@ -56,9 +71,9 @@ printf '\n== %s MagicMerge ==\n\n' "$MODE"
 for id in "${CASES[@]}"; do
   path="$(tr -d '\n' < "$ROOT/fixtures/$id/path.txt")"
   expect="$(python3 -c "import json; print(json.load(open('$ROOT/fixtures/$id/meta.json'))['expect_$MODE'])")"
-  git switch --quiet --detach "origin/case/$id/ours"
+  git switch --quiet "case/$id/ours"
   set +e
-  git merge --quiet --no-edit "origin/case/$id/theirs" >/tmp/magicmerge-merge.out 2>&1
+  git merge --quiet --no-edit "case/$id/theirs" >/tmp/magicmerge-merge.out 2>&1
   merge_status=$?
   set -e
   unmerged="$(git ls-files -u | wc -l | tr -d ' ')"
@@ -90,7 +105,7 @@ PY
   else
     echo "    (file deleted)"
   fi
-  git merge --abort >/dev/null 2>&1 || git reset --quiet --hard "origin/case/$id/ours"
+  git merge --abort >/dev/null 2>&1 || git reset --quiet --hard "case/$id/ours"
 done
 
 echo
